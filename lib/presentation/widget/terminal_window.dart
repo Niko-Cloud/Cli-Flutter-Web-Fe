@@ -1,37 +1,66 @@
-import 'package:cli_web/presentation/widget/terminal_output.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../theme/terminal_color_scheme.dart';
+import '../controller/terminal_notifier.dart';
 import 'terminal_header.dart';
+import 'terminal_output.dart';
 
-class TerminalWindow extends StatelessWidget {
+class TerminalWindow extends ConsumerStatefulWidget {
   const TerminalWindow({super.key});
 
   @override
+  ConsumerState<TerminalWindow> createState() => _TerminalWindowState();
+}
+
+class _TerminalWindowState extends ConsumerState<TerminalWindow> {
+  final FocusNode _focusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 1000,
-      height: 700,
-      decoration: BoxDecoration(
-        color: TerminalColors.background,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: Colors.white.withValues(alpha: 0.08),
+    return KeyboardListener(
+      focusNode: _focusNode,
+      onKeyEvent: (event) {
+        if (event is KeyDownEvent) {
+          final notifier = ref.read(terminalProvider.notifier);
+
+          if (event.logicalKey == LogicalKeyboardKey.enter) {
+            notifier.submit();
+          } else if (event.logicalKey == LogicalKeyboardKey.backspace) {
+            final input = ref.read(terminalProvider).currentInput;
+            if (input.isNotEmpty) {
+              notifier.type(input.substring(0, input.length - 1));
+            }
+          } else if (event.character != null && event.character!.isNotEmpty) {
+            notifier.type(
+              ref.read(terminalProvider).currentInput + event.character!,
+            );
+          }
+        }
+      },
+      child: Container(
+        width: 1200,
+        height: 720,
+        decoration: BoxDecoration(
+          color: TerminalColors.background,
+          borderRadius: BorderRadius.circular(12),
         ),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black87,
-            blurRadius: 30,
-            offset: Offset(0, 20),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Column(
+            children: const [
+              TerminalHeader(),
+              Expanded(child: TerminalOutput()),
+            ],
           ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Column(
-          children: const [
-            TerminalHeader(),
-            Expanded(child: TerminalOutput()),
-          ],
         ),
       ),
     );

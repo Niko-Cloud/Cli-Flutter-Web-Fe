@@ -1,42 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../theme/terminal_text.dart';
+import '../controller/terminal_notifier.dart';
 import 'blinking_cursor.dart';
 
-class TerminalOutput extends StatelessWidget {
+class TerminalOutput extends ConsumerWidget {
   const TerminalOutput({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final terminal = ref.watch(terminalProvider);
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
       child: ListView(
         children: [
-          SelectableText(
-            'Last login: Fri Jan 26 21:32:10 on web',
-            style: TerminalText.base,
-          ),
-
-          SelectableText(
-            '\$ whoami',
-            style: TerminalText.accent,
-          ),
-          SelectableText(
-            'Flutter Developer',
-            style: TerminalText.base,
-          ),
-
-          SelectableText(
-            '\$ help',
-            style: TerminalText.accent,
-          ),
-          SelectableText(
-            'whoami skills showcase contact clear',
-            style: TerminalText.base,
-          ),
+          for (final line in terminal.lines)
+            SelectableText(
+              line.text,
+              style: line.isCommand
+                  ? TerminalText.accent
+                  : TerminalText.base,
+            ),
 
           Row(
             children: [
               Text('\$ ', style: TerminalText.accent),
+              Text(
+                terminal.currentInput,
+                style: TerminalText.base,
+              ),
               const BlinkingCursor(),
             ],
           ),
