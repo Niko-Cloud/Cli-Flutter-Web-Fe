@@ -50,11 +50,11 @@ class _MacTrafficLights extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: const [
-        _MacDot(color: Color(0xFFFF5F56)),
+        _MacDot(color: TerminalTrafficLightColors.red),
         SizedBox(width: 8),
-        _MacDot(color: Color(0xFFFFBD2E)),
+        _MacDot(color: TerminalTrafficLightColors.yellow),
         SizedBox(width: 8),
-        _MacDot(color: Color(0xFF27C93F)),
+        _MacDot(color: TerminalTrafficLightColors.green),
       ],
     );
   }
