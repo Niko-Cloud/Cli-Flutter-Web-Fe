@@ -31,17 +31,25 @@ class _TerminalWindowState extends ConsumerState<TerminalWindow> {
       onKeyEvent: (event) {
         if (event is KeyDownEvent) {
           final notifier = ref.read(terminalProvider.notifier);
+          final state = ref.read(terminalProvider);
 
           if (event.logicalKey == LogicalKeyboardKey.enter) {
             notifier.submit();
+          } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+            notifier.previousCommand();
+          } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+            notifier.nextCommand();
           } else if (event.logicalKey == LogicalKeyboardKey.backspace) {
-            final input = ref.read(terminalProvider).currentInput;
-            if (input.isNotEmpty) {
-              notifier.type(input.substring(0, input.length - 1));
+            if (state.currentInput.isNotEmpty) {
+              notifier.type(
+                state.currentInput
+                    .substring(0, state.currentInput.length - 1),
+              );
             }
-          } else if (event.character != null && event.character!.isNotEmpty) {
+          } else if (event.character != null &&
+              event.character!.isNotEmpty) {
             notifier.type(
-              ref.read(terminalProvider).currentInput + event.character!,
+              state.currentInput + event.character!,
             );
           }
         }
