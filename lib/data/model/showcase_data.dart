@@ -16,12 +16,4 @@ class ShowcaseEntry {
   });
 }
 
-const showcaseData = [
-  ShowcaseEntry(
-    id: 1,
-    title: 'Realtime Chat',
-    summary: 'End-to-end encrypted chat app',
-    stack: ['Flutter', 'Firebase'],
-    repoUrl: 'https://github.com/you/chat',
-  ),
-];
+
