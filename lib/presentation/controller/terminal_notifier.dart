@@ -139,14 +139,16 @@ class TerminalNotifier extends Notifier<TerminalState> {
     final nextIndex = state.historyIndex + 1;
 
     if (nextIndex >= state.history.length) {
-      state = state.copyWith(historyIndex: -1, currentInput: '');
+      state = state.copyWith(historyIndex: -1, currentInput: '', cursorIndex: 0);
       return;
     }
+
+    final current = state.history[nextIndex].length;
 
     state = state.copyWith(
       historyIndex: nextIndex,
       currentInput: state.history[nextIndex],
-      cursorIndex: 0,
+      cursorIndex: current,
     );
   }
 
