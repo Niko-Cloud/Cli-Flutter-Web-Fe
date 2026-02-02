@@ -11,29 +11,36 @@ class TerminalOutput extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final terminal = ref.watch(terminalProvider);
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
-      child: ListView(
-        children: [
-          for (final line in terminal.lines)
-            SelectableText(
-              line.text,
-              style: line.isCommand
-                  ? TerminalText.accent
-                  : TerminalText.base,
-            ),
-
-          Row(
+    return DefaultTextStyle(
+      style: TerminalText.base.copyWith(
+        fontFamily: 'JetBrainsMono',
+      ),
+      child: SelectionArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+          child: ListView(
             children: [
-              Text('\$ ', style: TerminalText.accent),
-              Text(
-                terminal.currentInput,
-                style: TerminalText.base,
+              for (final line in terminal.lines)
+                Text(
+                  line.text,
+                  style: line.isCommand
+                      ? TerminalText.accent
+                      : TerminalText.base,
+                ),
+
+              Row(
+                children: [
+                  Text('\$ ', style: TerminalText.accent),
+                  Text(
+                    terminal.currentInput,
+                    style: TerminalText.base,
+                  ),
+                  const BlinkingCursor(),
+                ],
               ),
-              const BlinkingCursor(),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
