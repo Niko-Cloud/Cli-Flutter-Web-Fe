@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../utils/command_parser.dart';
-import '../../utils/command_result.dart';
 import '../../utils/date_header_format.dart';
 import 'terminal_line.dart';
 
@@ -51,9 +51,26 @@ class TerminalNotifier extends Notifier<TerminalState> {
     state = state.copyWith(currentInput: value, historyIndex: -1);
   }
 
+
+  // submit
   void submit() {
     final input = state.currentInput.trim();
-    if (input.isEmpty) return;
+
+    // If input is empty, just add a new prompt line
+    if (input.trim().isEmpty) {
+      state = state.copyWith(
+        lines: [
+          ...state.lines,
+          const TerminalLine(
+            text: '\$',
+            isCommand: true,
+          ),
+        ],
+        currentInput: '',
+        historyIndex: -1,
+      );
+      return;
+    }
 
     final newLines = [
       ...state.lines,
