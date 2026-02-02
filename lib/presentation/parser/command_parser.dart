@@ -1,7 +1,8 @@
-import 'package:cli_web/utils/command_help_parser.dart';
-import 'package:cli_web/utils/command_showcase_parser.dart';
+import 'package:cli_web/presentation/parser/command_help_parser.dart';
+import 'package:cli_web/presentation/parser/command_showcase_parser.dart';
 
 import 'command_result.dart';
+import 'command_whoami_parser.dart';
 
 CommandResult parseCommand(String input) {
   final parts = input.trim().split(RegExp(r'\s+'));
@@ -13,7 +14,7 @@ CommandResult parseCommand(String input) {
       return handleHelp(args);
 
     case 'whoami':
-      return const CommandResult(output: ['Flutter Developer']);
+      return handleWhoami();
 
     case 'skills':
       return const CommandResult(

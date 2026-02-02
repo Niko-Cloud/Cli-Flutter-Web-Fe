@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../utils/command_parser.dart';
+import '../parser/command_parser.dart';
 import '../../utils/date_header_format.dart';
 import 'terminal_line.dart';
 

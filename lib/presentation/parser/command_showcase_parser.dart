@@ -1,5 +1,5 @@
-import '../data/mock/showcase_data_mock.dart';
-import '../data/model/showcase_data.dart';
+import '../../data/mock/showcase_data_mock.dart';
+import '../../data/model/showcase_data.dart';
 import 'command_result.dart';
 
 String _truncate(String value, int max) {
