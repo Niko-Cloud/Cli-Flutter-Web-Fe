@@ -57,6 +57,12 @@ class _TerminalOutputState extends ConsumerState<TerminalOutput> {
       }
     });
 
+    final input = terminal.currentInput;
+    final i = terminal.cursorIndex;
+
+    final before = input.substring(0, i);
+    final after = input.substring(i);
+
     return DefaultTextStyle(
       style: TerminalText.base.copyWith(
         fontFamily: 'JetBrainsMono',
@@ -78,11 +84,9 @@ class _TerminalOutputState extends ConsumerState<TerminalOutput> {
               Row(
                 children: [
                   Text('\$ ', style: TerminalText.accent),
-                  Text(
-                    terminal.currentInput,
-                    style: TerminalText.base,
-                  ),
+                  Text(before, style: TerminalText.base),
                   const BlinkingCursor(),
+                  Text(after, style: TerminalText.base),
                 ],
               ),
             ],

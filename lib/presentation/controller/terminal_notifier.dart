@@ -9,12 +9,14 @@ class TerminalState {
   final String currentInput;
   final List<String> history;
   final int historyIndex;
+  final int cursorIndex;
 
   const TerminalState({
     required this.lines,
     required this.currentInput,
     required this.history,
     required this.historyIndex,
+    required this.cursorIndex,
   });
 
   TerminalState copyWith({
@@ -22,12 +24,14 @@ class TerminalState {
     String? currentInput,
     List<String>? history,
     int? historyIndex,
+    int? cursorIndex,
   }) {
     return TerminalState(
       lines: lines ?? this.lines,
       currentInput: currentInput ?? this.currentInput,
       history: history ?? this.history,
       historyIndex: historyIndex ?? this.historyIndex,
+      cursorIndex: cursorIndex ?? this.cursorIndex,
     );
   }
 }
@@ -44,13 +48,22 @@ class TerminalNotifier extends Notifier<TerminalState> {
       currentInput: '',
       history: const [],
       historyIndex: -1,
+      cursorIndex: 0,
     );
   }
 
   void type(String value) {
-    state = state.copyWith(currentInput: value, historyIndex: -1);
-  }
+    final input = state.currentInput;
+    final i = state.cursorIndex;
 
+    final updated = input.substring(0, i) + value + input.substring(i);
+
+    state = state.copyWith(
+      currentInput: updated,
+      cursorIndex: _clampCursor(i + value.length, updated),
+      historyIndex: -1,
+    );
+  }
 
   // submit
   void submit() {
@@ -61,10 +74,7 @@ class TerminalNotifier extends Notifier<TerminalState> {
       state = state.copyWith(
         lines: [
           ...state.lines,
-          const TerminalLine(
-            text: '\$',
-            isCommand: true,
-          ),
+          const TerminalLine(text: '\$', isCommand: true),
         ],
         currentInput: '',
         historyIndex: -1,
@@ -85,6 +95,7 @@ class TerminalNotifier extends Notifier<TerminalState> {
         currentInput: '',
         history: [...state.history, input],
         historyIndex: -1,
+        cursorIndex: 0,
       );
       return;
     }
@@ -98,6 +109,7 @@ class TerminalNotifier extends Notifier<TerminalState> {
       currentInput: '',
       history: [...state.history, input],
       historyIndex: -1,
+      cursorIndex: 0,
     );
   }
 
@@ -114,6 +126,7 @@ class TerminalNotifier extends Notifier<TerminalState> {
     state = state.copyWith(
       historyIndex: nextIndex,
       currentInput: state.history[nextIndex],
+      cursorIndex: state.history[nextIndex].length,
     );
   }
 
@@ -133,6 +146,7 @@ class TerminalNotifier extends Notifier<TerminalState> {
     state = state.copyWith(
       historyIndex: nextIndex,
       currentInput: state.history[nextIndex],
+      cursorIndex: 0,
     );
   }
 
@@ -140,13 +154,52 @@ class TerminalNotifier extends Notifier<TerminalState> {
     if (text.isEmpty) return;
 
     final normalized = text.replaceAll('\r\n', '\n');
+    final i = state.cursorIndex;
+    final input = state.currentInput;
+
+    final updated = input.substring(0, i) + normalized + input.substring(i);
 
     state = state.copyWith(
-      currentInput: state.currentInput + normalized,
+      currentInput: updated,
+      cursorIndex: _clampCursor(i + normalized.length, updated),
       historyIndex: -1,
     );
   }
 
+  // Delete with Backspace Key middle cursor
+  void backspace() {
+    final i = state.cursorIndex;
+    final input = state.currentInput;
+
+    if (i <= 0) return;
+
+    final updated = input.substring(0, i - 1) + input.substring(i);
+
+    state = state.copyWith(
+      currentInput: updated,
+      cursorIndex: _clampCursor(i - 1, updated),
+      historyIndex: -1,
+    );
+  }
+
+  // Middle Text Editing with arrow Keys
+  void moveCursorLeft() {
+    if (state.cursorIndex <= 0) return;
+
+    state = state.copyWith(cursorIndex: state.cursorIndex - 1);
+  }
+
+  void moveCursorRight() {
+    if (state.cursorIndex >= state.currentInput.length) return;
+
+    state = state.copyWith(cursorIndex: state.cursorIndex + 1);
+  }
+}
+
+int _clampCursor(int cursor, String input) {
+  if (cursor < 0) return 0;
+  if (cursor > input.length) return input.length;
+  return cursor;
 }
 
 final terminalProvider = NotifierProvider<TerminalNotifier, TerminalState>(

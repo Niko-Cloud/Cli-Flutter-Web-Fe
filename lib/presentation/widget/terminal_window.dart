@@ -29,39 +29,56 @@ class _TerminalWindowState extends ConsumerState<TerminalWindow> {
     return KeyboardListener(
       focusNode: _focusNode,
       onKeyEvent: (event) async {
-        if (event is! KeyDownEvent) return;
+        if (event is! KeyDownEvent && event is !KeyRepeatEvent) {
+          return;
+        }
 
         final notifier = ref.read(terminalProvider.notifier);
         final state = ref.read(terminalProvider);
 
-        final isPaste =
-            (event.logicalKey == LogicalKeyboardKey.keyV) &&
+        final isPaste = (event.logicalKey == LogicalKeyboardKey.keyV) &&
             (HardwareKeyboard.instance.isMetaPressed ||
                 HardwareKeyboard.instance.isControlPressed);
 
         if (isPaste) {
-          final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
-
-          if (clipboardData?.text != null) {
-            notifier.paste(clipboardData!.text!);
+          final data = await Clipboard.getData(Clipboard.kTextPlain);
+          if (data?.text != null) {
+            notifier.paste(data!.text!);
           }
           return;
         }
 
-        if (event.logicalKey == LogicalKeyboardKey.enter) {
-          notifier.submit();
-        } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-          notifier.previousCommand();
-        } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-          notifier.nextCommand();
-        } else if (event.logicalKey == LogicalKeyboardKey.backspace) {
-          if (state.currentInput.isNotEmpty) {
-            notifier.type(
-              state.currentInput.substring(0, state.currentInput.length - 1),
-            );
-          }
-        } else if (event.character != null && event.character!.isNotEmpty) {
-          notifier.type(state.currentInput + event.character!);
+        switch (event.logicalKey) {
+          case LogicalKeyboardKey.enter:
+            notifier.submit();
+            break;
+
+          case LogicalKeyboardKey.arrowLeft:
+            notifier.moveCursorLeft();
+            break;
+
+          case LogicalKeyboardKey.arrowRight:
+            notifier.moveCursorRight();
+            break;
+
+          case LogicalKeyboardKey.arrowUp:
+            notifier.previousCommand();
+            break;
+
+          case LogicalKeyboardKey.arrowDown:
+            notifier.nextCommand();
+            break;
+
+          case LogicalKeyboardKey.backspace:
+            notifier.backspace();
+            break;
+
+          default:
+            if (event.character != null &&
+                event.character!.isNotEmpty &&
+                event.character != '\n') {
+              notifier.type(event.character!);
+            }
         }
       },
       child: Container(
