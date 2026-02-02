@@ -28,30 +28,40 @@ class _TerminalWindowState extends ConsumerState<TerminalWindow> {
   Widget build(BuildContext context) {
     return KeyboardListener(
       focusNode: _focusNode,
-      onKeyEvent: (event) {
-        if (event is KeyDownEvent) {
-          final notifier = ref.read(terminalProvider.notifier);
-          final state = ref.read(terminalProvider);
+      onKeyEvent: (event) async {
+        if (event is! KeyDownEvent) return;
 
-          if (event.logicalKey == LogicalKeyboardKey.enter) {
-            notifier.submit();
-          } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-            notifier.previousCommand();
-          } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-            notifier.nextCommand();
-          } else if (event.logicalKey == LogicalKeyboardKey.backspace) {
-            if (state.currentInput.isNotEmpty) {
-              notifier.type(
-                state.currentInput
-                    .substring(0, state.currentInput.length - 1),
-              );
-            }
-          } else if (event.character != null &&
-              event.character!.isNotEmpty) {
+        final notifier = ref.read(terminalProvider.notifier);
+        final state = ref.read(terminalProvider);
+
+        final isPaste =
+            (event.logicalKey == LogicalKeyboardKey.keyV) &&
+            (HardwareKeyboard.instance.isMetaPressed ||
+                HardwareKeyboard.instance.isControlPressed);
+
+        if (isPaste) {
+          final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
+
+          if (clipboardData?.text != null) {
+            notifier.paste(clipboardData!.text!);
+          }
+          return;
+        }
+
+        if (event.logicalKey == LogicalKeyboardKey.enter) {
+          notifier.submit();
+        } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+          notifier.previousCommand();
+        } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+          notifier.nextCommand();
+        } else if (event.logicalKey == LogicalKeyboardKey.backspace) {
+          if (state.currentInput.isNotEmpty) {
             notifier.type(
-              state.currentInput + event.character!,
+              state.currentInput.substring(0, state.currentInput.length - 1),
             );
           }
+        } else if (event.character != null && event.character!.isNotEmpty) {
+          notifier.type(state.currentInput + event.character!);
         }
       },
       child: Container(

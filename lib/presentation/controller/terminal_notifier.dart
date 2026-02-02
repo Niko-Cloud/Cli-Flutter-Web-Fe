@@ -135,6 +135,18 @@ class TerminalNotifier extends Notifier<TerminalState> {
       currentInput: state.history[nextIndex],
     );
   }
+
+  Future<void> paste(String text) async {
+    if (text.isEmpty) return;
+
+    final normalized = text.replaceAll('\r\n', '\n');
+
+    state = state.copyWith(
+      currentInput: state.currentInput + normalized,
+      historyIndex: -1,
+    );
+  }
+
 }
 
 final terminalProvider = NotifierProvider<TerminalNotifier, TerminalState>(
