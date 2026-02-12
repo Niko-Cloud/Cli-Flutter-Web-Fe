@@ -2,9 +2,11 @@ import 'package:cli_web/presentation/parser/command_contact_parser.dart';
 import 'package:cli_web/presentation/parser/command_education_parser.dart';
 import 'package:cli_web/presentation/parser/command_help_parser.dart';
 import 'package:cli_web/presentation/parser/command_skill_parser.dart';
+import 'package:cli_web/presentation/parser/command_work_parser.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'command_result.dart';
+import 'command_showcase_parser.dart';
 import 'command_whoami_parser.dart';
 
 Future<CommandResult> parseCommand(Ref ref, String input) async {
@@ -27,10 +29,13 @@ Future<CommandResult> parseCommand(Ref ref, String input) async {
 
     case 'skill':
       return handleSkills(ref);
-    //
-    // case 'showcase':
-    //   return handleShowcase(args);
-    //
+
+    case 'work':
+      return handleWork(ref);
+
+    case 'showcase':
+      return handleShowcase(args);
+
     case 'clear':
       return const CommandResult(clear: true);
 
