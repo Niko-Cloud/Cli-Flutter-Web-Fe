@@ -3,11 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../provider/command_provider.dart';
 import 'command_result.dart';
 
-Future<CommandResult> handleHelp(List<String> args) async {
+Future<CommandResult> handleHelp(Ref ref, List<String> args) async {
   // HELP (GENERAL)
 
-  final container = ProviderContainer();
-  final commands = await container.read(commandListProvider.future);
+  final commands = await ref.read(commandListProvider.future);
 
   if (args.isEmpty) {
     final output = <String>[
@@ -30,7 +29,7 @@ Future<CommandResult> handleHelp(List<String> args) async {
   final name = args.first.toLowerCase();
 
   final command =
-  await container.read(commandByNameProvider(name).future);
+  await ref.read(commandByNameProvider(name).future);
 
   if (command == null) {
     return CommandResult(

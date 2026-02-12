@@ -1,17 +1,20 @@
 import 'package:cli_web/presentation/parser/command_help_parser.dart';
 import 'package:cli_web/presentation/parser/command_showcase_parser.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'command_result.dart';
 import 'command_whoami_parser.dart';
 
-Future<CommandResult> parseCommand(String input) async {
+Future<CommandResult> parseCommand(
+    Ref ref,
+    String input) async {
   final parts = input.trim().split(RegExp(r'\s+'));
   final cmd = parts.first.toLowerCase();
   final args = parts.skip(1).toList();
 
   switch (cmd) {
     case 'help':
-      return handleHelp(args);
+      return handleHelp(ref, args);
 
     // case 'whoami':
     //   return handleWhoami();

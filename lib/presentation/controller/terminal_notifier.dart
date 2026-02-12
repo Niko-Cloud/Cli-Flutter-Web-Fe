@@ -87,7 +87,7 @@ class TerminalNotifier extends Notifier<TerminalState> {
       TerminalLine(text: '\$ $input', isCommand: true),
     ];
 
-    final result = await parseCommand(input);
+    final result = await parseCommand(ref, input);
 
     if (result.clear) {
       state = TerminalState(
@@ -139,7 +139,11 @@ class TerminalNotifier extends Notifier<TerminalState> {
     final nextIndex = state.historyIndex + 1;
 
     if (nextIndex >= state.history.length) {
-      state = state.copyWith(historyIndex: -1, currentInput: '', cursorIndex: 0);
+      state = state.copyWith(
+        historyIndex: -1,
+        currentInput: '',
+        cursorIndex: 0,
+      );
       return;
     }
 
