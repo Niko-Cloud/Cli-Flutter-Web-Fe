@@ -4,7 +4,7 @@ import 'package:cli_web/presentation/parser/command_showcase_parser.dart';
 import 'command_result.dart';
 import 'command_whoami_parser.dart';
 
-CommandResult parseCommand(String input) {
+Future<CommandResult> parseCommand(String input) async {
   final parts = input.trim().split(RegExp(r'\s+'));
   final cmd = parts.first.toLowerCase();
   final args = parts.skip(1).toList();
@@ -13,26 +13,26 @@ CommandResult parseCommand(String input) {
     case 'help':
       return handleHelp(args);
 
-    case 'whoami':
-      return handleWhoami();
-
-    case 'skills':
-      return const CommandResult(
-        output: ['Flutter', 'Dart', 'Firebase', 'REST API'],
-      );
-
-    case 'showcase':
-      return handleShowcase(args);
-
-    case 'contact':
-      return const CommandResult(
-        output: [
-          'Email: you@email.com',
-          'GitHub: github.com/you',
-          'LinkedIn: linkedin.com/in/you',
-        ],
-      );
-
+    // case 'whoami':
+    //   return handleWhoami();
+    //
+    // case 'skills':
+    //   return const CommandResult(
+    //     output: ['Flutter', 'Dart', 'Firebase', 'REST API'],
+    //   );
+    //
+    // case 'showcase':
+    //   return handleShowcase(args);
+    //
+    // case 'contact':
+    //   return const CommandResult(
+    //     output: [
+    //       'Email: you@email.com',
+    //       'GitHub: github.com/you',
+    //       'LinkedIn: linkedin.com/in/you',
+    //     ],
+    //   );
+    //
     case 'clear':
       return const CommandResult(clear: true);
 

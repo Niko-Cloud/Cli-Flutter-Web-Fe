@@ -1,4 +1,3 @@
-import '../../data/mock/showcase_dto_mock.dart';
 import 'command_result.dart';
 
 CommandResult handleWhoami() {

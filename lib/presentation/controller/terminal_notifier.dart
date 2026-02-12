@@ -66,7 +66,7 @@ class TerminalNotifier extends Notifier<TerminalState> {
   }
 
   // submit
-  void submit() {
+  Future<void> submit() async {
     final input = state.currentInput.trim();
 
     // If input is empty, just add a new prompt line
@@ -87,7 +87,7 @@ class TerminalNotifier extends Notifier<TerminalState> {
       TerminalLine(text: '\$ $input', isCommand: true),
     ];
 
-    final result = parseCommand(input);
+    final result = await parseCommand(input);
 
     if (result.clear) {
       state = TerminalState(

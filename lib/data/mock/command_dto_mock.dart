@@ -46,4 +46,11 @@ final commandMockData = [
     usage: 'showcase [id]',
     helpText: 'Displays featured projects.',
   ),
+  CommandDto(
+    id: 7,
+    name: 'clear',
+    description: 'Delete all terminal history',
+    usage: 'clear',
+    helpText: 'Delete all terminal history.',
+  ),
 ];

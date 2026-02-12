@@ -1,92 +1,56 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../provider/command_provider.dart';
 import 'command_result.dart';
 
-CommandResult handleHelp(List<String> args) {
+Future<CommandResult> handleHelp(List<String> args) async {
   // HELP (GENERAL)
+
+  final container = ProviderContainer();
+  final commands = await container.read(commandListProvider.future);
+
   if (args.isEmpty) {
-    return const CommandResult(
+    final output = <String>[
+      'For more information on a specific command, type HELP command-name',
+      '',
+    ];
+    for (final c in commands) {
+      output.add('${c.name.toUpperCase().padRight(15)} ${c.description}');
+    }
+
+    output.add('');
+    output.add(
+      'For more information on tools see the command-line reference in the online help.',
+    );
+
+    return CommandResult(output: output);
+  }
+
+  // HELP <command>
+  final name = args.first.toLowerCase();
+
+  final command =
+  await container.read(commandByNameProvider(name).future);
+
+  if (command == null) {
+    return CommandResult(
       output: [
-        'For more information on a specific command, type HELP command-name',
-        '',
-        'WHOAMI         Displays information about the current user.',
-        'SKILLS         Lists technical/soft skills.',
-        'SHOWCASE       Displays featured portfolio items.',
-        'CONTACT        Displays contact information.',
-        'CLEAR          Clears the terminal screen.',
-        '',
-        'For more information on tools see the command-line reference in the online help.',
+        'No help available for: $name',
+        'Type HELP to see available commands.',
       ],
     );
   }
 
-  // HELP (COMMAND PER NAME)
-  final commandName = args.first.toLowerCase();
-
-  switch (commandName) {
-    case 'whoami':
-      return const CommandResult(
-        output: [
-          'WHOAMI',
-          '    Displays information about the current user.',
-          '',
-          'USAGE',
-          '    whoami',
-        ],
-      );
-
-    case 'skills':
-      return const CommandResult(
-        output: [
-          'SKILLS',
-          '    Lists technical skills.',
-          '',
-          'USAGE',
-          '    skills',
-        ],
-      );
-
-    case 'showcase':
-      return const CommandResult(
-        output: [
-          'SHOWCASE',
-          '    Displays featured portfolio items.',
-          '',
-          'USAGE',
-          '    showcase',
-          '',
-          'DESCRIPTION',
-          '    Lists applications, tools, and experiments',
-          '    included in this portfolio.',
-        ],
-      );
-
-    case 'contact':
-      return const CommandResult(
-        output: [
-          'CONTACT',
-          '    Displays contact information.',
-          '',
-          'USAGE',
-          '    contact',
-        ],
-      );
-
-    case 'clear':
-      return const CommandResult(
-        output: [
-          'CLEAR',
-          '    Clears the terminal screen.',
-          '',
-          'USAGE',
-          '    clear',
-        ],
-      );
-
-    default:
-      return CommandResult(
-        output: [
-          'No help available for: $commandName',
-          'Type HELP to see available commands.',
-        ],
-      );
-  }
+  return CommandResult(
+    output: [
+      command.name.toUpperCase(),
+      '    ${command.description}',
+      '',
+      'USAGE',
+      '    ${command.usage}',
+      '',
+      'DESCRIPTION',
+      '    ${command.helpText}',
+    ],
+  );
 }
