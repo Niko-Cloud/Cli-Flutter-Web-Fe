@@ -1,5 +1,7 @@
-import '../../data/mock/showcase_dto_mock.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../data/model/showcase_dto.dart';
+import '../../provider/showcase_provider.dart';
 import 'command_result.dart';
 
 String _truncate(String value, int max) {
@@ -11,7 +13,9 @@ String _pad(String value, int width) {
   return value.padRight(width);
 }
 
-CommandResult handleShowcase(List<String> args) {
+Future<CommandResult> handleShowcase(Ref ref, List<String> args) async {
+  final showcaseData = await ref.read(showcaseProvider.future);
+
   if (showcaseData.isEmpty) {
     return const CommandResult(output: ['No showcase entries available.']);
   }
@@ -38,9 +42,9 @@ CommandResult handleShowcase(List<String> args) {
   }
 
   const idW = 4;
-  const nameW = 16;
-  const stackW = 22;
-  const repoW = 30;
+  const nameW = 32;
+  const stackW = 42;
+  const repoW = 60;
 
   final output = <String>[];
 
@@ -49,7 +53,7 @@ CommandResult handleShowcase(List<String> args) {
     '${_pad('ID', idW)}'
     '${_pad('NAME', nameW)}'
     '${_pad('STACK', stackW)}'
-    '${_pad('GITHUB', repoW)}',
+    '${_pad('GITHUB REPO', repoW)}',
   );
 
   output.add(
@@ -60,19 +64,24 @@ CommandResult handleShowcase(List<String> args) {
   );
 
   // Rows
-  for (final ShowcaseDto e in showcaseData) {
-    final stack = e.stack.join(',');
+  for (final e in showcaseData) {
+    final stack = e.stack.join(', ');
+    final repo = e.repoUrl
+        .replaceFirst('https://', '')
+        .replaceFirst('http://', '');
 
     output.add(
       '${_pad(e.id.toString(), idW)}'
-      '${_pad(_truncate(e.title, nameW - 1), nameW)}'
-      '${_pad(_truncate(stack, stackW - 1), stackW)}'
-      '${_pad(_truncate(e.repoUrl.replaceFirst('https://', ''), repoW - 1), repoW)}',
+          '${_pad(_truncate(e.title, nameW - 1), nameW)}'
+          '${_pad(_truncate(stack, stackW - 1), stackW)}'
+          '${_pad(_truncate(repo, repoW - 1), repoW)}',
     );
   }
 
   output.add('');
-  output.add('Tip: type `showcase <id>` to view details of a specific entry.');
+  output.add(
+    'Tip: type `showcase <id>` to view details of a specific entry.',
+  );
 
   return CommandResult(output: output);
 }
@@ -95,7 +104,7 @@ CommandResult _renderShowcaseDetail(ShowcaseDto e) {
   output.add('');
 
   output.add('LINKS');
-  output.add('    GitHub: ${e.repoUrl}');
+  output.add('    Git: ${e.repoUrl}');
   if (e.liveUrl != null) {
     output.add('    Live:   ${e.liveUrl}');
   }

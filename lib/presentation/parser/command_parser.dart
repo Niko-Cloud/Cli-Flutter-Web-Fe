@@ -34,7 +34,7 @@ Future<CommandResult> parseCommand(Ref ref, String input) async {
       return handleWork(ref);
 
     case 'showcase':
-      return handleShowcase(args);
+      return handleShowcase(ref, args);
 
     case 'clear':
       return const CommandResult(clear: true);
