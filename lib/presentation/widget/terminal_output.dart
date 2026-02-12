@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../theme/terminal_text.dart';
+import '../../utils/link_text_span.dart';
 import '../controller/terminal_notifier.dart';
 import 'blinking_cursor.dart';
 
@@ -34,8 +35,7 @@ class _TerminalOutputState extends ConsumerState<TerminalOutput> {
     final terminal = ref.watch(terminalProvider);
 
     // detect input change
-    final bool inputChanged =
-        terminal.currentInput != _lastInput;
+    final bool inputChanged = terminal.currentInput != _lastInput;
     _lastInput = terminal.currentInput;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -43,17 +43,13 @@ class _TerminalOutputState extends ConsumerState<TerminalOutput> {
 
       // typing input scroll
       if (inputChanged) {
-        _scrollController.jumpTo(
-          _scrollController.position.maxScrollExtent,
-        );
+        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
         return;
       }
 
       // auto-scrol
       if (_autoScrollEnabled) {
-        _scrollController.jumpTo(
-          _scrollController.position.maxScrollExtent,
-        );
+        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
       }
     });
 
@@ -64,9 +60,7 @@ class _TerminalOutputState extends ConsumerState<TerminalOutput> {
     final after = input.substring(i);
 
     return DefaultTextStyle(
-      style: TerminalText.base.copyWith(
-        fontFamily: 'JetBrainsMono',
-      ),
+      style: TerminalText.base.copyWith(fontFamily: 'JetBrainsMono'),
       child: SelectionArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
@@ -74,11 +68,11 @@ class _TerminalOutputState extends ConsumerState<TerminalOutput> {
             controller: _scrollController,
             children: [
               for (final line in terminal.lines)
-                Text(
-                  line.text,
-                  style: line.isCommand
-                      ? TerminalText.accent
-                      : TerminalText.base,
+                SelectableText.rich(
+                  buildLinkSpan(
+                    line.text,
+                    line.isCommand ? TerminalText.accent : TerminalText.base,
+                  ),
                 ),
 
               Row(
@@ -96,4 +90,3 @@ class _TerminalOutputState extends ConsumerState<TerminalOutput> {
     );
   }
 }
-

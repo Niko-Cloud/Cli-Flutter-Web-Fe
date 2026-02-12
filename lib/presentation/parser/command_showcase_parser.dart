@@ -66,22 +66,18 @@ Future<CommandResult> handleShowcase(Ref ref, List<String> args) async {
   // Rows
   for (final e in showcaseData) {
     final stack = e.stack.join(', ');
-    final repo = e.repoUrl
-        .replaceFirst('https://', '')
-        .replaceFirst('http://', '');
+    final repo = e.repoUrl;
 
     output.add(
       '${_pad(e.id.toString(), idW)}'
-          '${_pad(_truncate(e.title, nameW - 1), nameW)}'
-          '${_pad(_truncate(stack, stackW - 1), stackW)}'
-          '${_pad(_truncate(repo, repoW - 1), repoW)}',
+      '${_pad(_truncate(e.title, nameW - 1), nameW)}'
+      '${_pad(_truncate(stack, stackW - 1), stackW)}'
+      '${_pad(_truncate(repo, repoW - 1), repoW)}',
     );
   }
 
   output.add('');
-  output.add(
-    'Tip: type `showcase <id>` to view details of a specific entry.',
-  );
+  output.add('Tip: type `showcase <id>` to view details of a specific entry.');
 
   return CommandResult(output: output);
 }
