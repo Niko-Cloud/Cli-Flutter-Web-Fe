@@ -1,16 +1,57 @@
-# cli_web
+# CLI Flutter Web Frontend
 
-Personal CLI-Like Web Portofolio
+A terminal-style portfolio web application built with **Flutter Web** and **Riverpod State Management**.  
+This app simulates a real CLI (Command-Line Interface) experience in the browser, powered by a Go backend API.
 
-## Getting Started
+➡️ Frontend for the backend: [Here](https://github.com/Niko-Cloud/CLI-Go-Web-Backend)
 
-This project is a starting point for a Flutter application.
+---
 
-A few resources to get you started if this is your first Flutter project:
+## Overview
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+This project renders your portfolio data as a **CLI UI in the browser**, with features like:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Command parsing (`whoami`, `help`, `skills`, `showcase`, `work`, `education`, `contact`)
+- Interactive terminal input
+- Async API fetching with mock fallback
+- Auto-scroll and cursor simulation
+- Clickable links in output
+- Terminal command history
+- Realistic terminal UI (Mac style)
+
+---
+
+## Key Features
+
+✔ Terminal UI (CLI-like)  
+✔ Input editing (Arrow keys, backspace, paste)  
+✔ Async remote API calls (Dio)  
+✔ Mock fallback when backend unreachable  
+✔ Riverpod for state management  
+✔ Responsive and clean UI  
+✔ Clickable links (GitHub, LinkedIn, etc.)
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| Frontend | Flutter Web |
+| State Management | Riverpod 3.x |
+| HTTP Client | Dio |
+| URL Handling | `Link` widget |
+| Terminal UI | Custom Flutter widgets |
+| Backend Integration | REST API (Go Gin) |
+
+---
+## 🚀 Getting Started
+
+### Requirements
+
+- Flutter 3.0+  
+- Dart 2.18+  
+- Optional: Go backend running (locally or deployed)
+
+---
+
