@@ -1,7 +1,7 @@
 import 'package:cli_web/presentation/parser/command_contact_parser.dart';
 import 'package:cli_web/presentation/parser/command_education_parser.dart';
 import 'package:cli_web/presentation/parser/command_help_parser.dart';
-import 'package:cli_web/presentation/parser/command_showcase_parser.dart';
+import 'package:cli_web/presentation/parser/command_skill_parser.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'command_result.dart';
@@ -25,22 +25,11 @@ Future<CommandResult> parseCommand(Ref ref, String input) async {
     case 'education':
       return handleEducation(ref);
 
-    // case 'skills':
-    //   return const CommandResult(
-    //     output: ['Flutter', 'Dart', 'Firebase', 'REST API'],
-    //   );
+    case 'skill':
+      return handleSkills(ref);
     //
     // case 'showcase':
     //   return handleShowcase(args);
-    //
-    // case 'contact':
-    //   return const CommandResult(
-    //     output: [
-    //       'Email: you@email.com',
-    //       'GitHub: github.com/you',
-    //       'LinkedIn: linkedin.com/in/you',
-    //     ],
-    //   );
     //
     case 'clear':
       return const CommandResult(clear: true);
