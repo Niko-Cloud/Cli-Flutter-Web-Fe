@@ -8,7 +8,7 @@ CommandResult handleHelp(List<String> args) {
         'For more information on a specific command, type HELP command-name',
         '',
         'WHOAMI         Displays information about the current user.',
-        'SKILLS         Lists technical skills.',
+        'SKILLS         Lists technical/soft skills.',
         'SHOWCASE       Displays featured portfolio items.',
         'CONTACT        Displays contact information.',
         'CLEAR          Clears the terminal screen.',

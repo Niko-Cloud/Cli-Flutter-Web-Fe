@@ -1,5 +1,5 @@
-import '../../data/mock/showcase_data_mock.dart';
-import '../../data/model/showcase_data.dart';
+import '../../data/mock/showcase_dto_mock.dart';
+import '../../data/model/showcase_dto.dart';
 import 'command_result.dart';
 
 String _truncate(String value, int max) {
@@ -27,7 +27,7 @@ CommandResult handleShowcase(List<String> args) {
 
     final entry = showcaseData
         .where((e) => e.id == id)
-        .cast<ShowcaseEntry?>()
+        .cast<ShowcaseDto?>()
         .firstWhere((e) => e != null, orElse: () => null);
 
     if (entry == null) {
@@ -60,7 +60,7 @@ CommandResult handleShowcase(List<String> args) {
   );
 
   // Rows
-  for (final ShowcaseEntry e in showcaseData) {
+  for (final ShowcaseDto e in showcaseData) {
     final stack = e.stack.join(',');
 
     output.add(
@@ -77,7 +77,7 @@ CommandResult handleShowcase(List<String> args) {
   return CommandResult(output: output);
 }
 
-CommandResult _renderShowcaseDetail(ShowcaseEntry e) {
+CommandResult _renderShowcaseDetail(ShowcaseDto e) {
   final output = <String>[];
 
   output.add('NAME');
