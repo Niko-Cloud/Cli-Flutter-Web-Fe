@@ -10,6 +10,8 @@ final contactApiProvider = Provider<ContactApi>((ref) {
 
 final contactProvider =
 FutureProvider<List<ContactDto>>((ref) async {
+  ref.keepAlive();
+
   final api = ref.read(contactApiProvider);
   return api.getContacts();
 });

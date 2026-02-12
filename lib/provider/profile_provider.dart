@@ -9,6 +9,8 @@ final profileApiProvider = Provider<ProfileApi>((ref) {
 });
 
 final profileProvider = FutureProvider<ProfileDto?>((ref) async {
+  ref.keepAlive();
+
   final api = ref.read(profileApiProvider);
   return api.getProfile();
 });

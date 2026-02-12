@@ -9,6 +9,10 @@ final showcaseApiProvider = Provider<ShowcaseApi>((ref) {
 });
 
 final showcaseProvider = FutureProvider<List<ShowcaseDto>>((ref) async {
+  ref.keepAlive();
+
   final api = ref.read(showcaseApiProvider);
   return api.getShowcases();
 });
+
+

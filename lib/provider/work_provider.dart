@@ -13,6 +13,8 @@ Provider<WorkExperienceApi>((ref) {
 
 final workExperienceProvider =
 FutureProvider<List<WorkExperienceDto>>((ref) async {
+  ref.keepAlive();
+  
   final api = ref.read(workExperienceApiProvider);
   return api.getWorkExperience();
 });

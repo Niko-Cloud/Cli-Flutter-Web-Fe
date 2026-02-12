@@ -10,6 +10,8 @@ final educationApiProvider = Provider<EducationApi>((ref) {
 
 final educationProvider =
 FutureProvider<List<EducationDto>>((ref) async {
+  ref.keepAlive();
+
   final api = ref.read(educationApiProvider);
   return api.getEducation();
 });

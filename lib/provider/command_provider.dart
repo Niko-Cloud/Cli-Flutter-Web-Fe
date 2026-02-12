@@ -9,6 +9,8 @@ final commandApiProvider = Provider<CommandApi>((ref) {
 });
 
 final commandListProvider = FutureProvider<List<CommandDto>>((ref) async {
+  ref.keepAlive();
+
   final api = ref.read(commandApiProvider);
   return api.getAllCommands();
 });
@@ -17,6 +19,8 @@ final commandByNameProvider = FutureProvider.family<CommandDto?, String>((
   ref,
   name,
 ) async {
+  ref.keepAlive();
+
   final api = ref.read(commandApiProvider);
   return api.getCommandByName(name);
 });

@@ -9,6 +9,8 @@ final skillApiProvider = Provider<SkillApi>((ref) {
 });
 
 final skillProvider = FutureProvider<List<SkillDto>>((ref) async {
+  ref.keepAlive();
+
   final api = ref.read(skillApiProvider);
   return api.getSkills();
 });
