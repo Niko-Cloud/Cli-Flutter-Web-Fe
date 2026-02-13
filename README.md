@@ -45,7 +45,7 @@ This project renders your portfolio data as a **CLI UI in the browser**, with fe
 | Backend Integration | REST API (Go Gin) |
 
 ---
-## 🚀 Getting Started
+## Getting Started
 
 ### Requirements
 
