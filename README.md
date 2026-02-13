@@ -3,6 +3,8 @@
 A terminal-style portfolio web application built with **Flutter Web** and **Riverpod State Management**.  
 This app simulates a real CLI (Command-Line Interface) experience in the browser, powered by a Go backend API.
 
+DEMO : [Here](https://niko-cloud.github.io/Cli-Flutter-Web-Fe/)
+
 ➡️ Frontend for the backend: [Here](https://github.com/Niko-Cloud/CLI-Go-Web-Backend)
 
 ---
